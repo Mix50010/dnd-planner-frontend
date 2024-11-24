@@ -14,11 +14,21 @@ const App = () => {
         setParties(parties.filter((_, i) => i !== index));
     };
 
+    const handleUpdateParty = (index, updatedParty) => {
+        setParties(
+            parties.map((party, i) => (i === index ? updatedParty : party))
+        );
+    };
+
     return (
         <div className="container">
             <h1>Планировщик партий Dungeons & Dragons</h1>
             <CreatePartyForm onCreate={handleCreateParty} />
-            <PartyList parties={parties} onDelete={handleDeleteParty} />
+            <PartyList
+                parties={parties}
+                onDelete={handleDeleteParty}
+                onUpdate={handleUpdateParty}
+            />
         </div>
     );
 };
