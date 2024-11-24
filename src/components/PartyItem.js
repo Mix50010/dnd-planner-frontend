@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 
 const PartyItem = ({ party, onDelete, onUpdate, index }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [editedParty, setEditedParty] = useState({ ...party });
+
+    // Копируем исходные данные партии для редактирования
+    const [editedParty, setEditedParty] = useState({
+        title: party.title,
+        date_time: party.date_time,
+        platform: party.platform,
+        description: party.description,
+        attendees: party.attendees || [], // Участники — массив, если нет данных, пустой массив
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -10,7 +18,15 @@ const PartyItem = ({ party, onDelete, onUpdate, index }) => {
     };
 
     const handleSave = () => {
-        onUpdate(index, editedParty);
+        // Преобразуем структуру редактируемой партии обратно в формат сервера
+        const updatedParty = {
+            title: editedParty.title,
+            date_time: editedParty.date_time,
+            platform: editedParty.platform,
+            description: editedParty.description,
+            attendees: editedParty.attendees,
+        };
+        onUpdate(index, updatedParty);
         setIsEditing(false);
     };
 
@@ -21,39 +37,39 @@ const PartyItem = ({ party, onDelete, onUpdate, index }) => {
                     <label>Название:</label>
                     <input
                         type="text"
-                        name="partyName"
-                        value={editedParty.partyName}
+                        name="title"
+                        value={editedParty.title}
                         onChange={handleInputChange}
                     />
                     <label>Дата и время:</label>
                     <input
                         type="datetime-local"
-                        name="partyDate"
-                        value={editedParty.partyDate}
+                        name="date_time"
+                        value={editedParty.date_time}
                         onChange={handleInputChange}
                     />
                     <label>Местоположение:</label>
                     <input
                         type="text"
-                        name="partyLocation"
-                        value={editedParty.partyLocation}
+                        name="platform"
+                        value={editedParty.platform}
                         onChange={handleInputChange}
                     />
                     <label>Описание:</label>
                     <textarea
-                        name="partyDescription"
-                        value={editedParty.partyDescription}
+                        name="description"
+                        value={editedParty.description}
                         onChange={handleInputChange}
                     ></textarea>
                     <label>Участники:</label>
                     <input
                         type="text"
-                        name="participants"
-                        value={editedParty.participants.join(', ')}
+                        name="attendees"
+                        value={editedParty.attendees.join(', ')}
                         onChange={(e) =>
                             setEditedParty({
                                 ...editedParty,
-                                participants: e.target.value.split(',').map((p) => p.trim()),
+                                attendees: e.target.value.split(',').map((p) => p.trim()),
                             })
                         }
                     />
@@ -62,14 +78,18 @@ const PartyItem = ({ party, onDelete, onUpdate, index }) => {
                 </div>
             ) : (
                 <div>
-                    <h2>Название партии: {party.partyName}</h2>
-                    <p><strong>Дата и время:</strong> {party.partyDate}</p>
-                    <p><strong>Местоположение:</strong> {party.partyLocation}</p>
-                    <p><strong>Описание:</strong> {party.partyDescription}</p>
-                    <p><strong>Участники:</strong> {party.participants.join(', ')}</p>
+                    <h2>Название партии: {party.title}</h2>
+                    <p><strong>Дата и время:</strong> {party.date_time}</p>
+                    <p><strong>Местоположение:</strong> {party.platform}</p>
+                    <p><strong>Описание:</strong> {party.description}</p>
+                    <p><strong>Участники:</strong> 
+                        {party.attendees.length > 0
+                            ? party.attendees.join(', ')
+                            : 'Нет участников'}
+                    </p>
                     <div className="actions">
                         <button onClick={() => setIsEditing(true)}>Редактировать</button>
-                        <button onClick={() => onDelete(index)}>Удалить</button>
+                        <button onClick={() => onDelete(index, party.id)}>Удалить</button>
                     </div>
                 </div>
             )}
