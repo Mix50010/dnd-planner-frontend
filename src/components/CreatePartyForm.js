@@ -71,11 +71,12 @@ const CreatePartyForm = ({ onCreate }) => {
 
             <label htmlFor="participants">Пригласить участников (email)</label>
             <input
-                type="text"
+                type="email"
                 id="participants"
                 value={participants}
                 onChange={(e) => setParticipants(e.target.value)}
                 placeholder="Введите email участников через запятую"
+				required
             />
 
             <button type="submit">Создать партию</button>

@@ -29,16 +29,16 @@ const App = () => {
 
 	const handleLogin = async (email, password) => {
 		try {
-			const response = await fetch(
-				`http://127.0.0.1:8000/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-				{
-					method: 'POST',
-				}
-			);
+			const response = await fetch('http://127.0.0.1:8000/auth/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email, password }),
+			});
 
 			if (!response.ok) {
 				if (response.status === 401) {
-					// Если статус 401, показываем ошибку
 					alert('Неверный логин или пароль');
 				} else {
 					throw new Error('Ошибка авторизации');
@@ -51,8 +51,6 @@ const App = () => {
 			console.error(error.message);
 		}
 	};
-
-
 
 	const handleSignup = async (user) => {
 		try {
@@ -105,7 +103,6 @@ const App = () => {
 				console.error(`Error updating party with ID: ${updatedParty.id}`, error); // Лог ошибок
 			});
 	};
-
 
 	return (
 		<div className="container">

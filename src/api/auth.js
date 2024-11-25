@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../api';
 
 // Регистрация
 export const signup = async (user) => {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
