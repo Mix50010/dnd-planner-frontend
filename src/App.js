@@ -53,8 +53,6 @@ const App = () => {
 	};
 	
 
-
-
 	const handleSignup = async (user) => {
 		try {
 			await signup(user);
@@ -106,7 +104,6 @@ const App = () => {
 				console.error(`Error updating party with ID: ${updatedParty.id}`, error); // Лог ошибок
 			});
 	};
-
 
 	return (
 		<div className="container">
