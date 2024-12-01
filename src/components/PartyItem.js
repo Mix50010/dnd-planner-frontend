@@ -5,11 +5,12 @@ const PartyItem = ({ party, onDelete, onUpdate, index }) => {
 
     // Копируем исходные данные партии для редактирования
     const [editedParty, setEditedParty] = useState({
+		id: party.id,
         title: party.title,
         date_time: party.date_time,
         platform: party.platform,
         description: party.description,
-        attendees: party.attendees || [], // Участники — массив, если нет данных, пустой массив
+        attendees: party.attendees,
     });
 
     const handleInputChange = (e) => {
@@ -20,6 +21,7 @@ const PartyItem = ({ party, onDelete, onUpdate, index }) => {
     const handleSave = () => {
         // Преобразуем структуру редактируемой партии обратно в формат сервера
         const updatedParty = {
+			id: editedParty.id,
             title: editedParty.title,
             date_time: editedParty.date_time,
             platform: editedParty.platform,

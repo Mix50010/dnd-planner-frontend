@@ -5,27 +5,38 @@ const CreatePartyForm = ({ onCreate }) => {
     const [partyDate, setPartyDate] = useState('');
     const [partyLocation, setPartyLocation] = useState('');
     const [partyDescription, setPartyDescription] = useState('');
-    const [participants, setParticipants] = useState('');
+    const [participantInput, setParticipantInput] = useState('');
+    const [participants, setParticipants] = useState([]);
+
+    const handleAddParticipant = () => {
+        if (participantInput.trim()) {
+            setParticipants([...participants, participantInput.trim()]);
+            setParticipantInput('');
+        }
+    };
+
+    const handleRemoveParticipant = (index) => {
+        setParticipants(participants.filter((_, i) => i !== index));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         const newParty = {
-            title: partyName,  // Изменено на 'title', как ожидает сервер
-            date_time: partyDate,  // Убедись, что формат даты правильный
-            platform: partyLocation,  // Используем 'platform', как указано на сервере
+            title: partyName,
+            date_time: partyDate,
+            platform: partyLocation,
             description: partyDescription,
-            invite_emails: participants.split(',').map(email => email.trim()),  // Переименовали в 'invite_emails'
+            invite_emails: participants,
         };
+		console.log(newParty);
+        onCreate(newParty);
 
-        onCreate(newParty); // Отправляем данные на сервер
-
-        // Очистка полей формы
         setPartyName('');
         setPartyDate('');
         setPartyLocation('');
         setPartyDescription('');
-        setParticipants('');
+        setParticipants([]);
     };
 
     return (
@@ -69,15 +80,43 @@ const CreatePartyForm = ({ onCreate }) => {
                 placeholder="Введите описание партии"
             ></textarea>
 
-            <label htmlFor="participants">Пригласить участников (email)</label>
-            <input
-                type="email"
-                id="participants"
-                value={participants}
-                onChange={(e) => setParticipants(e.target.value)}
-                placeholder="Введите email участников через запятую"
-				required
-            />
+            <label htmlFor="participantInput">Добавить участника</label>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                    type="email"
+                    id="participantInput"
+                    value={participantInput}
+                    onChange={(e) => setParticipantInput(e.target.value)}
+                    placeholder="Введите email участника"
+                />
+                <button type="button" onClick={handleAddParticipant}>
+                    Добавить
+                </button>
+            </div>
+
+            {participants.length > 0 && (
+                <ul>
+                    {participants.map((email, index) => (
+                        <li key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            {email}
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveParticipant(index)}
+                                style={{
+                                    marginLeft: '10px',
+                                    background: 'red',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    padding: '2px 5px',
+                                }}
+                            >
+                                Удалить
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
 
             <button type="submit">Создать партию</button>
         </form>

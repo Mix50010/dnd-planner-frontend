@@ -5,6 +5,8 @@ import CreatePartyForm from './components/CreatePartyForm';
 import PartyList from './components/PartyList';
 import { fetchParties, createParty, deleteParty, updateParty } from './api/parties';
 import { login, signup } from './api/auth';
+import { getCurrentUser } from './api/user';
+
 import './App.css';
 
 const App = () => {
@@ -17,8 +19,10 @@ const App = () => {
 		if (token) {
 			const loadParties = async () => {
 				try {
-					const data = await fetchParties(token);
-					setParties(data);
+					const currentUser = await getCurrentUser(token); // Получаем текущего пользователя
+					const data = await fetchParties(token); // Загружаем все партии
+					const userParties = data.filter((party) => party.creator_id === currentUser.id); // Фильтруем партии
+					setParties(userParties);
 				} catch (error) {
 					console.error(error.message);
 				}
@@ -26,6 +30,7 @@ const App = () => {
 			loadParties();
 		}
 	}, [token]);
+	
 
 	const handleLogin = async (email, password) => {
 		try {
@@ -59,7 +64,7 @@ const App = () => {
 			alert('Регистрация успешна! Войдите в систему.');
 			setIsSignup(false); // Переключение на форму входа
 		} catch (error) {
-			console.error(error.message);
+			alert(error.message);
 		}
 	};
 
